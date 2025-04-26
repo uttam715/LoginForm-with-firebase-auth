@@ -2,15 +2,23 @@ import Input from "../atoms/Input.jsx";
 import Button from "../atoms/Button.jsx";
 import { Link, useNavigate } from "react-router-dom";
 import { useState } from "react";
+import { auth } from "../firebase.jsx";
+import { signInWithEmailAndPassword } from "firebase/auth";
 
 export default function LoginForm() {
   const [loginUser, setLoginUser] = useState({ email: "", password: "" });
   const [loginError, setLoginError] = useState({ email: "", password: "" });
 
-  const navigation = useNavigate();
-  function handleOnClick() {
+   const navigation = useNavigate();
+   async function handleOnClick() {
     if (!loginUser.email.trim() || !loginUser.password.trim()) return;
     navigation("/home");
+    try {
+      await signInWithEmailAndPassword(auth, loginUser.email, loginUser.password);
+      alert("Logged in!");
+    } catch (err) {
+      alert(err.message);
+    }
   }
   function handleOnChange(e, placeholder) {
     switch (placeholder) {
